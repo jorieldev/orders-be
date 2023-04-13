@@ -1,6 +1,8 @@
 const express = require("express");
 const Papa = require("papaparse");
 const router = express.Router();
+const fetch = require("node-fetch");
+
 require("dotenv").config();
 
 const api = {
