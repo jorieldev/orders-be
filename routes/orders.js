@@ -44,7 +44,7 @@ const getOrders = async (req, res) => {
     res.send(parsed);
   } catch (e) {
     console.log(e);
-    handleHttpError(res, "ERROR_GET_ITEMS");
+    res.send({ error: "Error" });
   }
 };
 
