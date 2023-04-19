@@ -1,7 +1,9 @@
 const express = require("express");
 const Papa = require("papaparse");
 const router = express.Router();
+const app = express();
 const fetch = require("node-fetch");
+const serveless = require("serverless-http");
 
 require("dotenv").config();
 
@@ -52,4 +54,6 @@ const getOrders = async (req, res) => {
 
 router.get("/orders/:number", getOrders);
 
-module.exports = router;
+app.use("/.netlify/functions/api", router);
+
+module.exports.handler = serveless(app);

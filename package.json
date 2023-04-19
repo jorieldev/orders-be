@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:prod": "pm2 delete all && pm2 start ./app.js --name=app",
-    "start": "node ./app.js"
+    "start": "node ./app.js",
+    "build": "netlify deploy --prod"
   },
   "keywords": [],
   "author": "",
@@ -17,9 +18,15 @@
     "express": "^4.18.2",
     "mongoose": "^7.0.3",
     "node-fetch": "^2.6.9",
-    "papaparse": "^5.4.0"
+    "papaparse": "^5.4.0",
+    "serverless-http": "^3.2.0",
+    "netlify-cli": "^12.7.2",
+    "netlify-lambda": "^2.0.15"
   },
   "engines": {
     "node": "16.x"
+  },
+  "devDependencies": {
+    "netlify-cli": "^14.1.0"
   }
 }
