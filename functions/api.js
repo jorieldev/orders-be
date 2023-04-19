@@ -4,6 +4,9 @@ const router = express.Router();
 const app = express();
 const fetch = require("node-fetch");
 const serveless = require("serverless-http");
+const cors = require("cors");
+
+app.use(cors());
 
 require("dotenv").config();
 
