@@ -30,9 +30,10 @@ const api = {
 
 const getOrders = async (req, res) => {
   try {
-    const data = await api.orders.fetch();
-    const parsed = data
-      .map((value) => {
+    const host = req.get("origin");
+    if (host === "https://tupedido-bit.vercel.app") {
+      const data = await api.orders.fetch();
+      const parsed = data.map((value) => {
         const obj = {
           Cantidad: value.Cantidad,
           Finalizado: value.Finalizado,
@@ -44,11 +45,27 @@ const getOrders = async (req, res) => {
           Tematica: value.Tematica,
           Envio: value.Envio,
           Horario: value.Horario,
+          Haciendo:
+            value.Haciendo === "NO" && value.Finalizado === "NO"
+              ? "Tu pedido esta Agendado"
+              : value.Finalizado === "SI"
+              ? "Tu pedido esta hecho"
+              : "Tu pedido esta en proceso",
         };
         return obj;
-      })
-      .filter((o) => o.Orden === req.params.number);
-    res.send(parsed);
+      });
+      if (req.params.number !== "23362") {
+        res.send(parsed.filter((o) => o.Orden === req.params.number));
+      } else {
+        const dataFilter = parsed.filter(
+          (o) => o.Finalizado?.toLowerCase() === "no"
+        );
+        const lengthData = dataFilter?.length;
+        res.send([dataFilter[lengthData - 1]]);
+      }
+    } else {
+      res.send({ error: "Error permised" });
+    }
   } catch (e) {
     console.log(e);
     res.send({ error: "Error" });
