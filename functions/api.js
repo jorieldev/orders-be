@@ -28,9 +28,9 @@ const api = {
   },
 };
 
-function Submit(e) {
+const postOrders = async (order) => {
   const formData = new FormData();
-  formData.append("Id", e);
+  formData.append("Id", order);
   fetch(process.env.STATICS_KEY, {
     method: "POST",
     body: formData,
@@ -39,7 +39,7 @@ function Submit(e) {
     .catch((error) => {
       console.log(error);
     });
-}
+};
 
 const getOrders = async (req, res) => {
   try {
@@ -70,7 +70,7 @@ const getOrders = async (req, res) => {
       });
       if (req?.params?.number !== "23362") {
         res.send(parsed.filter((o) => o.Orden === req.params.number));
-        Submit(req.params.number);
+        postOrders(req.params.number);
       } else {
         const dataFilter = parsed.filter(
           (o) => o.Finalizado?.toLowerCase() === "no"
