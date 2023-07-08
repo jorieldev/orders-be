@@ -51,6 +51,7 @@ const getOrders = async (req, res) => {
               : value.Finalizado === "SI"
               ? "Tu pedido esta hecho"
               : "Tu pedido esta en proceso",
+          Nombre: value.Datos,
         };
         return obj;
       });
