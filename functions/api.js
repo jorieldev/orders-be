@@ -28,19 +28,6 @@ const api = {
   },
 };
 
-const postOrders = async (order) => {
-  const formData = new FormData();
-  formData.append("Id", order);
-  fetch(process.env.STATICS_KEY, {
-    method: "POST",
-    body: formData,
-  })
-    .then((res) => res.json())
-    .catch((error) => {
-      console.log(error);
-    });
-};
-
 const getOrders = async (req, res) => {
   try {
     const host = req.get("origin");
@@ -69,7 +56,6 @@ const getOrders = async (req, res) => {
         return obj;
       });
       if (req?.params?.number !== "23362") {
-        postOrders(req.params.number);
         res.send(parsed.filter((o) => o.Orden === req.params.number));
       } else {
         const dataFilter = parsed.filter(
