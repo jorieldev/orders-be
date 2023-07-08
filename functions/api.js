@@ -28,10 +28,23 @@ const api = {
   },
 };
 
+function Submit(e) {
+  const formData = new FormData();
+  formData.append("Id", e);
+  fetch(process.env.STATICS_KEY, {
+    method: "POST",
+    body: formData,
+  })
+    .then((res) => res.json())
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
 const getOrders = async (req, res) => {
   try {
     const host = req.get("origin");
-    if (host === "https://tupedido-bit.vercel.app") {
+    if (host === process.env.HOST) {
       const data = await api.orders.fetch();
       const parsed = data.map((value) => {
         const obj = {
@@ -55,8 +68,9 @@ const getOrders = async (req, res) => {
         };
         return obj;
       });
-      if (req.params.number !== "23362") {
+      if (req?.params?.number !== "23362") {
         res.send(parsed.filter((o) => o.Orden === req.params.number));
+        Submit(req.params.number);
       } else {
         const dataFilter = parsed.filter(
           (o) => o.Finalizado?.toLowerCase() === "no"
