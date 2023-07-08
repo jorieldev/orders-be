@@ -30,7 +30,7 @@ const api = {
 
 const postOrders = async (order) => {
   const formData = new FormData();
-  formData.append("Id", order ?? "Ups");
+  formData.append("Id", order);
   fetch(process.env.STATICS_KEY, {
     method: "POST",
     body: formData,
@@ -69,8 +69,8 @@ const getOrders = async (req, res) => {
         return obj;
       });
       if (req?.params?.number !== "23362") {
-        res.send(parsed.filter((o) => o.Orden === req.params.number));
         postOrders(req.params.number);
+        res.send(parsed.filter((o) => o.Orden === req.params.number));
       } else {
         const dataFilter = parsed.filter(
           (o) => o.Finalizado?.toLowerCase() === "no"
