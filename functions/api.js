@@ -30,7 +30,7 @@ const api = {
 
 const postOrders = async (order) => {
   const formData = new FormData();
-  formData.append("Id", order);
+  formData.append("Id", order ?? "Ups");
   fetch(process.env.STATICS_KEY, {
     method: "POST",
     body: formData,
