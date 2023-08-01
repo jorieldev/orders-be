@@ -56,7 +56,9 @@ const getOrders = async (req, res) => {
         return obj;
       });
       if (req?.params?.number !== "23362") {
-        res.send(parsed.filter((o) => o.Orden === req.params.number));
+        const data = parsed.filter((o) => o.Orden === req.params.number);
+        data.numberTotal = parsed?.length;
+        res.send(data);
       } else {
         const dataFilter = parsed.filter(
           (o) => o.Finalizado?.toLowerCase() === "no"
