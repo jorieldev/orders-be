@@ -26,6 +26,33 @@ const api = {
       return parsed;
     },
   },
+  allDashboard: {
+    fetch: async () => {
+      const resp = await fetch(`${process.env.EXCEL_KEY}`);
+      const data = await resp.text();
+      const parsed = await new Promise((resolve, reject) => {
+        Papa.parse(data, {
+          header: true,
+          complete: (result) => resolve(result.data),
+          error: reject,
+        });
+      });
+      const respBack = await fetch(`${process.env.EXCEL_BACK}`);
+      const dataBack = await respBack.text();
+      const parsedBack = await new Promise((resolve, reject) => {
+        Papa.parse(dataBack, {
+          header: true,
+          complete: (result) => resolve(result.data),
+          error: reject,
+        });
+      });
+
+      return {
+        Process: parsed?.length || 0,
+        Done: 3000 + parsedBack?.length || 0,
+      };
+    },
+  },
 };
 
 const getOrders = async (req, res) => {
@@ -75,7 +102,23 @@ const getOrders = async (req, res) => {
   }
 };
 
+const getDashboard = async (req, res) => {
+  try {
+    const host = req.get("origin");
+    if (host === process.env.HOST) {
+      const data = await api.orders.fetch();
+      res.json({ dashboard: data });
+    } else {
+      res.end({ error: "ERROR PERMISED" });
+    }
+  } catch {
+    res.send({ error: "ERROR PERMISED" });
+  }
+};
+
 router.get("/orders/:number", getOrders);
+
+router.get("/dashboard/getAll", getDashboard);
 
 app.use("/.netlify/functions/api", router);
 
