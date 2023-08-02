@@ -106,7 +106,7 @@ const getDashboard = async (req, res) => {
   try {
     const host = req.get("origin");
     if (host === process.env.HOST) {
-      const data = await api.orders.fetch();
+      const data = await api.allDashboard.fetch();
       res.json({ dashboard: data });
     } else {
       res.end({ error: "ERROR PERMISED" });
