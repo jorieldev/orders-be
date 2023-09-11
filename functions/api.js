@@ -55,47 +55,51 @@ const api = {
   },
 };
 
+function compareByDate(a, b) {
+  return a.FechaEntrega - b.FechaEntrega;
+}
+
 const getOrders = async (req, res) => {
   try {
     const host = req.get("origin");
-    if (host === process.env.HOST) {
-      const data = await api.orders.fetch();
-      const parsed = data.map((value) => {
-        const obj = {
-          Cantidad: value.Cantidad,
-          Finalizado: value.Finalizado,
-          LlaverosImanesCentros: value.LlaverosImanesCentros,
-          FechaEntrega: value.FechaEntrega,
-          Total: value.Total,
-          Seña: value.Seña,
-          Orden: value.Orden,
-          Tematica: value.Tematica,
-          Envio: value.Envio,
-          Horario: value.Horario,
-          Haciendo:
-            value.Haciendo === "NO" && value.Finalizado === "NO"
-              ? "Tu pedido esta Agendado"
-              : value.Finalizado === "SI"
-              ? "Tu pedido esta hecho"
-              : "Tu pedido esta en proceso",
-          Nombre: value.Datos,
-        };
-        return obj;
-      });
-      if (req?.params?.number !== "23362") {
-        const data = parsed.filter((o) => o.Orden === req.params.number);
-        data.numberTotal = parsed?.length;
-        res.send(data);
-      } else {
-        const dataFilter = parsed.filter(
-          (o) => o.Finalizado?.toLowerCase() === "no"
-        );
-        const lengthData = dataFilter?.length;
-        res.send([dataFilter[lengthData - 1]]);
-      }
+    // if (host === process.env.HOST) {
+    const data = await api.orders.fetch();
+    const parsed = data.map((value) => {
+      const obj = {
+        Cantidad: value.Cantidad,
+        Finalizado: value.Finalizado,
+        LlaverosImanesCentros: value.LlaverosImanesCentros,
+        FechaEntrega: value.FechaEntrega,
+        Total: value.Total,
+        Seña: value.Seña,
+        Orden: value.Orden,
+        Tematica: value.Tematica,
+        Envio: value.Envio,
+        Horario: value.Horario,
+        Haciendo:
+          value.Haciendo === "NO" && value.Finalizado === "NO"
+            ? "Tu pedido esta Agendado"
+            : value.Finalizado === "SI"
+            ? "Tu pedido esta hecho"
+            : "Tu pedido esta en proceso",
+        Nombre: value.Datos,
+      };
+      return obj;
+    });
+    if (req?.params?.number !== "23362") {
+      const data = parsed.filter((o) => o.Orden === req.params.number);
+      data.numberTotal = parsed?.length;
+      res.send(data);
     } else {
-      res.send({ error: "Error permised" });
+      const dataFilter = parsed
+        .filter((o) => o.Finalizado?.toLowerCase() === "no")
+        .filter((f) => new Date() >= new Date(f.FechaEntrega));
+      const dataFilterByDate = dataFilter?.length ?? 0;
+      res.send([dataFilter[dataFilterByDate - 1]]);
     }
+    // } else {
+    res.send({ error: "Error permised" });
+    // }
   } catch (e) {
     console.log(e);
     res.send({ error: "Error" });
